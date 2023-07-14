@@ -77,7 +77,7 @@ def run_fio():
 
 def test_disk(file_path):
     replace_fio_cfg(file_path)
-    #run_fio()
+    run_fio()
     bws = get_bandwidths_fio_output("fio-output.log")
     print(bws)
     run_shell_command("rm -f file_path")
