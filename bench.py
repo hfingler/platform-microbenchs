@@ -96,7 +96,7 @@ def compile_kernel():
 def test_compile(n_runs=3):
     download_kernel()
     acc = 0.0
-    for _ in range(n_runs):
+    for _ in range(int(n_runs)):
         run_shell_command(f"rm -rf linux-4.19.288")
         run_shell_command("tar xf linux-4.19.288.tar.xz")
 
