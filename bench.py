@@ -7,11 +7,11 @@ import re
 # Helpers
 #
 def setup():
-    run_shell_command("sudo yum install -y fio iperf wget")
+    run_shell_command("sudo yum install -y fio iperf wget tmux")
     run_shell_command("sudo yum install -y openssl-devel hmaccalc zlib-devel binutils-devel elfutils-libelf-devel ncurses-devel make gcc bc bison flex")
      
 def cleanup():
-    run_shell_command("rm -r linux-4.19.288.tar.xz linux-4.19.288")
+    run_shell_command("rm -rf linux-4.19.288.tar.xz linux-4.19.288")
     run_shell_command("rm -f tmp_fio.cfg fio-output.log")
 
 def run_shell_command(command):
@@ -39,6 +39,7 @@ def test_network(endpoint_ip):
         tput = f"{out[-2]} {out[-1]}"
         print(f"{tput},")
         res.append(out[-2])
+        time.sleep(5)
     print(",".join(res))
 
 #
@@ -88,11 +89,13 @@ def download_kernel():
     run_shell_command("tar xf linux-4.19.288.tar.xz")
 
 def compile_kernel():
+    run_shell_command(f"rm -rf linux-4.19.288") # this should be negligible
     run_shell_command("cp kernel_config linux-4.19.288/.config")
     nprocs = run_shell_command("nproc")
     run_shell_command(f"cd linux-4.19.288 && make olddefconfig && make -j{nprocs}")
     
 def test_compile(n_runs=3):
+    download_kernel()
     total_time = timeit.timeit(lambda: compile_kernel(), number=int(n_runs))
     print(total_time)
     print(total_time/int(n_runs))
