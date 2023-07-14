@@ -89,17 +89,24 @@ def download_kernel():
     run_shell_command("tar xf linux-4.19.288.tar.xz")
 
 def compile_kernel():
-    run_shell_command(f"rm -rf linux-4.19.288") # this should be negligible
     run_shell_command("cp kernel_config linux-4.19.288/.config")
     nprocs = run_shell_command("nproc")
     run_shell_command(f"cd linux-4.19.288 && make olddefconfig && make -j{nprocs}")
     
 def test_compile(n_runs=3):
     download_kernel()
-    total_time = timeit.timeit(lambda: compile_kernel(), number=int(n_runs))
-    print(total_time)
-    print(total_time/int(n_runs))
-    return total_time/int(n_runs)
+    acc = 0.0
+    for _ in range(n_runs):
+        run_shell_command(f"rm -rf linux-4.19.288")
+        run_shell_command("tar xf linux-4.19.288.tar.xz")
+
+        starttime = timeit.default_timer()
+        compile_kernel()
+        acc += (timeit.default_timer() - starttime)
+
+    print(acc)
+    print("avg:", acc/int(n_runs))
+    return acc/int(n_runs)
 
 #
 # main
