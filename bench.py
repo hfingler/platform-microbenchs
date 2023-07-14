@@ -7,6 +7,7 @@ import re
 # Helpers
 #
 def setup():
+    run_shell_command("sudo yum install epel-release")
     run_shell_command("sudo yum install -y fio iperf wget tmux")
     run_shell_command("sudo yum install -y openssl-devel hmaccalc zlib-devel binutils-devel elfutils-libelf-devel ncurses-devel make gcc bc bison flex")
      
@@ -61,7 +62,6 @@ def get_bandwidths_fio_output(filename):
     for i in range(len(lines)-1):
         for k in bws.keys():
             if k in lines[i] and "groupid=" in lines[i]:
-                print("found")
                 bws[k] = get_bandwidth_fio_line(lines[i+1])
                 break
     return bws
