@@ -7,7 +7,7 @@ import re
 # Helpers
 #
 def setup():
-    run_shell_command("sudo yum install fio iperf wget")
+    run_shell_command("sudo yum install -y fio iperf wget")
     run_shell_command("sudo yum install -y openssl-devel hmaccalc zlib-devel binutils-devel elfutils-libelf-devel ncurses-devel make gcc bc bison flex")
      
 def cleanup():
@@ -92,9 +92,10 @@ def compile_kernel():
     nprocs = run_shell_command("nproc")
     run_shell_command(f"cd linux-4.19.288 && make olddefconfig && make -j{nprocs}")
     
-def test_compile(n_runs=1):
+def test_compile(n_runs=3):
     total_time = timeit.timeit(lambda: compile_kernel(), number=int(n_runs))
     print(total_time)
+    print(total_time/int(n_runs))
     return total_time/int(n_runs)
 
 #
